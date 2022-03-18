@@ -35,39 +35,39 @@ public static class ReportExtension
 
     private static void Substitute(this OpenXmlElement element, string textToSubstitute)
     {
-        var sdtRun = element.ChildElements[1].ChildElements[0].ChildElements[1].ChildElements;
+        var contentIndex = element.ChildElements.ToList().FindElementIndexByLocalName("sdtContent");
+        var runIndex = element.ChildElements[contentIndex].ChildElements[0].ToList().FindElementIndexByLocalName("r");
+
+        var sdtRun = element.ChildElements[contentIndex].ChildElements[0].ChildElements[runIndex].ChildElements;
+        
         Text text = new Text();
         text.Text = textToSubstitute;
-        var item = (Text)sdtRun.GetItem(1);
-        item.Text = textToSubstitute;
-        //sdtRun.RemoveAt(1);
-        
-        // element.SetAttribute();
-        //sdtRun.Insert(1, text);
 
-        Console.WriteLine();
+        var textIndex = sdtRun.ToList().FindElementIndexByLocalName("t");
+        var item = (Text)sdtRun.GetItem(textIndex);
+        item.Text = textToSubstitute;
     }
 
-    private static int FindSdtContentElement(List<OpenXmlElement> elementList)
+    private static int FindElementIndexByLocalName(this List<OpenXmlElement> elementList, string localName)
     {
         for (int i = 0; i < elementList.Count; i++)
         {
-            if (elementList[i].LocalName == "sdtContent")
+            if (elementList[i].LocalName == localName)
                 return i;
         }
 
-        throw new Exception("Element do not contain child element sdtContent");
+        throw new Exception($"Element do not contain child element {localName}");
     }
     
     private static void ProcessBody(this List<OpenXmlElement> body, List<string> tags, string tagLocalName = "sdt")
     {
         //TODO substituting via interpreter
-        var tempTextToSubstitute = "Mój przyjaciel prosiaczek";
+        var tempTextToSubstitute = "Gumowa kaczuszka";
 
-        for (int i = 0; i < body.Count; i++)
-            if (body[i].LocalName == tagLocalName && tags.Contains(body[i].InnerText))
+        foreach (var t in body)
+            if (t.LocalName == tagLocalName && tags.Contains(t.InnerText))
             {
-                body[i].Substitute(tempTextToSubstitute);
+                t.Substitute(tempTextToSubstitute);
             }
     }
 }
