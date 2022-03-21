@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1003" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DHIReportExtension\DHIReportExtension.csproj" />
+    </ItemGroup>
+
 </Project>
