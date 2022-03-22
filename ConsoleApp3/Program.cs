@@ -1,8 +1,27 @@
 ﻿using DHIReportExtension;
 using DocumentFormat.OpenXml.Packaging;
 
-string templatePath = @"C:\Users\togi\Documents\ST - Copy.docx";
+var copyPath = CleanTemplate();
 
-using WordprocessingDocument document = WordprocessingDocument.Open(templatePath, true);
+using WordprocessingDocument document = WordprocessingDocument.Open(copyPath, true);
 
 document.GenerateReport();
+
+
+
+
+
+
+
+
+
+static string CleanTemplate()
+{
+    string originalPath = @"C:\Users\togi\Documents\ST.docx";
+    string copyPath = @"C:\Users\togi\Documents\ST - Copy.docx";
+
+    File.Delete(copyPath);
+    File.Copy(originalPath, copyPath);
+
+    return copyPath;
+}

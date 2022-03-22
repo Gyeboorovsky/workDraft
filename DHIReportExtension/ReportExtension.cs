@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Validation;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
@@ -14,19 +15,27 @@ namespace DHIReportExtension
         {
             Body rawBody = wdDoc.MainDocumentPart.Document.Body;
 
-            rawBody.RebuildXmlTree();
-            wdDoc.Save();
-        }
-
-        private static void RebuildXmlTree(this Body rawBody)
-        {
+            //testing table
+            rawBody.InsertTable(3, 2);
+            
             var tags = new List<string>() {"Rower"};
-
             var tagName = "holder";
             
             var placeHolders = rawBody.GetPlaceHolders(tagName);
             
             placeHolders.ProcessBody(tags);
+            
+            wdDoc.Save();
+        }
+
+        private static void InsertTable(this Body rawBody, int columns, int rows)
+        {
+            var tbl = ArrangeWordElement.Arrange_Table(columns, rows);
+            var validator = new OpenXmlValidator();
+            //Created object validator
+            var wynikValidacji = validator.Validate(tbl);
+            //rawBody.InsertAt(tab, rawBody.Count()-1);
+            rawBody.Append(tbl);
         }
 
         private static List<OpenXmlElement> GetPlaceHolders(this OpenXmlElement elem, string tagName)
@@ -67,8 +76,6 @@ namespace DHIReportExtension
         private static OpenXmlElement? FindFirstOfDefaultOf<T>(this OpenXmlElement elem)
         where T : OpenXmlElement
         {
-            //TODO fix algo
-
             foreach (var childElement in elem.ChildElements)
             {
                 if (childElement.GetType() == typeof(T))
@@ -88,38 +95,41 @@ namespace DHIReportExtension
             var originalItem = (Text) element.FindFirstOfDefaultOf<Text>()!;
             
             //TODO interpreter response instead of textToSubstitute
-            //var interpreterResponse = 
             
             originalItem.Text = textToSubstitute;
         }
         
-        // //todo substitute with table
-        // private static void Substitute(this OpenXmlElement element, string textToSubstitute)
-        // {
-        //     //TODO interpreter in this method?
-        //     var originalItem = (Text) element.FindFirstOfDefaultOf<Text>()!;
-        //     
-        //     //TODO interpreter response instead of textToSubstitute
-        //     ///////////////////////////////////////////////////////////
-        //
-        //     var csv = "1,ser,chedar,2,mleko,3.2,3,chleb,pszenny";
-        //     int numOfCols = 3;
-        //     
-        //
-        //     //////////////////////////////////////////////////////////
-        //     originalItem.Text = textToSubstitute;
-        // }
-
-        private static int FindElementIndexByLocalName(this List<OpenXmlElement> elementList, string localName)
+        //todo substitute with table
+        private static void SubstituteWithTable(this OpenXmlElement element, List<OpenXmlElement> list)
         {
-            for (int i = 0; i < elementList.Count; i++)
-            {
-                if (elementList[i].LocalName == localName)
-                    return i;
-            }
+            
+            //TODO interpreter response instead of textToSubstitute
+            ///////////////////////////////////////////////////////////
+        
+            var textToSubstitute = "1,ser,chedar,2,mleko,3.2,3,chleb,pszenny";
+            var listOfWords = textToSubstitute.Split(",").ToList();
+            var tableList = new List<List<string>>();
+            int numOfCols = 3;
+            int numOfRows = listOfWords.Count / numOfCols;
+            
+            
 
-            throw new Exception($"Element do not contain child element {localName}");
+            var table = ArrangeWordElement.Arrange_Table(numOfCols, numOfRows);
+
+
+
         }
+
+        // private static int FindElementIndexByLocalName(this List<OpenXmlElement> elementList, string localName)
+        // {
+        //     for (int i = 0; i < elementList.Count; i++)
+        //     {
+        //         if (elementList[i].LocalName == localName)
+        //             return i;
+        //     }
+        //
+        //     throw new Exception($"Element do not contain child element {localName}");
+        // }
         
         private static void ProcessBody(this List<OpenXmlElement> placeholders, List<string> tags, string tagLocalName = "sdt")
         {
@@ -129,7 +139,7 @@ namespace DHIReportExtension
             foreach (var t in placeholders)
                 if (t.LocalName == tagLocalName && tags.Contains(t.InnerText))
                 {
-                    t.Substitute(tempTextToSubstitute);
+                    //t.Substitute(tempTextToSubstitute);
                 }
         }
     }
