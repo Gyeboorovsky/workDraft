@@ -14,7 +14,7 @@ namespace DHIReportExtension
         public static void GenerateReport(this WordprocessingDocument wdDoc)
         {
             Body rawBody = wdDoc.MainDocumentPart.Document.Body;
-
+            
             //testing table
             rawBody.InsertTable(3, 2);
             
@@ -39,7 +39,7 @@ namespace DHIReportExtension
             rawBody.Append(tbl);
         }
         
-        private static void Substitute(this OpenXmlElement element, string textToSubstitute)
+        private static void SubstituteText(this OpenXmlElement element, string textToSubstitute)
         {
             var originalItem = (Text) element.FindFirstOfDefaultOf<Text>()!;
 
@@ -81,7 +81,7 @@ namespace DHIReportExtension
             foreach (var t in placeholders)
                 if (t.LocalName == tagLocalName && tags.Contains(t.InnerText))
                 {
-                    t.Substitute(tempTextToSubstitute);
+                    t.SubstituteText(tempTextToSubstitute);
                 }
         }
     }
