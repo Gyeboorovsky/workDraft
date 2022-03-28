@@ -1,10 +1,7 @@
 using System;
-using System.Security.Cryptography.X509Certificates;
-using Aspose.Words.Fields;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Vml.Wordprocessing;
-using TopBorder = DocumentFormat.OpenXml.Drawing.TopBorder;
 
 namespace DHIReportExtension
 {

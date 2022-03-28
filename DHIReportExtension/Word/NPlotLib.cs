@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using NPlot.Bitmap;
 
 namespace DHIReportExtension
 {
@@ -32,7 +31,6 @@ namespace DHIReportExtension
         
         private static double[] RandomWalk(int points = 500, double start = 100, double mult = 5)
         {
-            // return an array of difting random numbers
             double[] values = new double[points];
             values[0] = start;
             for (int i = 1; i < points; i++)

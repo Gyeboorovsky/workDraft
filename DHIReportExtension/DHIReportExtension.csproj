@@ -11,6 +11,7 @@
       <PackageReference Include="DevExpress.Data" Version="21.2.6" />
       <PackageReference Include="DocumentFormat.OpenXml" Version="2.16.0" />
       <PackageReference Include="Microsoft.Office.Interop.Graph" Version="15.0.4420.1017" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="NPlot" Version="0.9.10" />
       <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
       <PackageReference Include="sautinsoft.document" Version="5.4.12.1" />
