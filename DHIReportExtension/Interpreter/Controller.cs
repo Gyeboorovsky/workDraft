@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 namespace DHIWordExtension.Interpreter
 {
     //Table.WSNM.Analyses { Filter:\"Diameter gt 50\", Sort:\"Diameter asc\", Select:\"Id Diameter MinorLoss HeadNodeId Roughness\" }
+    //Table.WSNM.Analyses { Filter:"Diameter gt 50", Sort:"Diameter asc", Select:"Id Diameter MinorLoss HeadNodeId Roughness" }
     //Count.WSNM.Pipes { Filter=\"Diameter gt 50\" }
     
     public static class Controller
