@@ -3,7 +3,7 @@ using DHIWordExtension.Interpreter;
 using DocumentFormat.OpenXml.Packaging;
 using WI = DHIReportExtension.WordElementArrangeImage;
 
-Controller.Interpret("dupa");
+Controller.InterpretingTest("dupa");
 
 string documentCopyPath = @"C:\Users\togi\Documents\ST - Copy.docx";
 CleanTemplate_DevelopmentTool(documentCopyPath);

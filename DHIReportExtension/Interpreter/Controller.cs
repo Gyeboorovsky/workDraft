@@ -1,46 +1,39 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using DHIWordExtension.Interpreter.Models;
 using Newtonsoft.Json;
 
 namespace DHIWordExtension.Interpreter
 {
-    //Table.WSNM.Analyses { Filter="Diameter gt 50", Sort="Diameter asc", Select="Id Diameter MinorLoss HeadNodeId Roughness" }
-    //Count.WSNM.Pipes { Filter="Diameter gt 50" }
+    //Table.WSNM.Analyses { Filter:\"Diameter gt 50\", Sort:\"Diameter asc\", Select:\"Id Diameter MinorLoss HeadNodeId Roughness\" }
+    //Count.WSNM.Pipes { Filter=\"Diameter gt 50\" }
     
     public static class Controller
     {
-        public static void Interpret(string input)
+        public static void InterpretingTest(string input)
         {
-            input = "Count.WSNM.Pipes { Filter:\"Diameter gt 50\" }";
+            input = "Table.WSNM.Analyses { Filter:\"Diameter gt 50\", Sort:\"Diameter asc\", Select:\"Id Diameter MinorLoss HeadNodeId Roughness\" }";
             ////////////////////////////////////////////////////////////////
 
-            
-            
+            QueryModel queryObject = QueryMapping(input);
 
-            ExtractJson(input);
+            Console.WriteLine(queryObject);
         }
 
-        public static object ExtractJson(string input)
+        public static QueryModel QueryMapping(string input)
         {
-            var extr = input.Split(' ').ToList();
-            extr.RemoveAt(0);
-            string dupa = "";
-            foreach (var e in extr)
-            {
-                dupa += e;
-            }
-            
-            
-            DynamicCośTam obj = JsonConvert.DeserializeObject<DynamicCośTam>(dupa);
+            var bodyPart = Regex.Match(input, @"\{.*\}").ToString();
+            var pathPart = Regex.Match(input, @"^([^\{ ])+").ToString();
+            var pathSubParts = pathPart.Split('.');
 
-            
-            
-            return obj;
+            QueryModel queryObject = JsonConvert.DeserializeObject<QueryModel>(bodyPart);
+            queryObject.QueryType =  (QueryType) Enum.Parse(typeof(QueryType), pathSubParts[0], true);
+            queryObject.DataBaseName = pathSubParts[1];
+            queryObject.TableName = pathSubParts[2];
+
+            return queryObject;
         }
-    }
-
-    public class DynamicCośTam
-    {
-        public string Filter { get; set; }
     }
 }
